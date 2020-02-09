@@ -14,7 +14,7 @@
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="iOS ReactiveCocoa 最全常用API整理（可做为手册查询）  什么是ReactiveCocoa？ReactiveCocoa（简称为RAC）,是由Github团队开源的一个具有FRP特性的iOS和OS X开发框架。FRP，Functional Reactive Programming，即函数式响应式编程。FRP的核心是信号，信号是数据流，可以被绑定和传递。 一个经典的形象生动比喻：">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2020-02-09T04:27:57.017Z">
+<meta property="og:updated_time" content="2020-02-09T07:24:44.317Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ReactiveCocoa">
 <meta name="twitter:description" content="iOS ReactiveCocoa 最全常用API整理（可做为手册查询）  什么是ReactiveCocoa？ReactiveCocoa（简称为RAC）,是由Github团队开源的一个具有FRP特性的iOS和OS X开发框架。FRP，Functional Reactive Programming，即函数式响应式编程。FRP的核心是信号，信号是数据流，可以被绑定和传递。 一个经典的形象生动比喻：">
@@ -129,7 +129,7 @@
 <h2 id="RACMulticastConnection"><a href="#RACMulticastConnection" class="headerlink" title="RACMulticastConnection"></a>RACMulticastConnection</h2><p>用于当一个信号，被多次订阅时，为了保证创建信号时，避免多次调用创建信号中的block，造成副作用，可以使用这个类处理。</p>
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">RACSignal *signal = [RACSignal createSignal:^RACDisposable *(<span class="keyword">id</span>&lt;RACSubscriber&gt; subscriber) &#123;</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"发送网络请求"</span>);</span><br><span class="line">    [subscriber sendNext:<span class="string">@"得到网络请求数据"</span>];</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">nil</span>;</span><br><span class="line">&#125;];</span><br><span class="line"></span><br><span class="line">[signal subscribeNext:^(<span class="keyword">id</span> x) &#123;</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"1 - %@"</span>,x);</span><br><span class="line">&#125;];</span><br><span class="line">[signal subscribeNext:^(<span class="keyword">id</span> x) &#123;</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"2 - %@"</span>,x);</span><br><span class="line">&#125;];</span><br><span class="line">[signal subscribeNext:^(<span class="keyword">id</span> x) &#123;</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"3 - %@"</span>,x);</span><br><span class="line">&#125;];</span><br><span class="line"></span><br><span class="line"><span class="comment">// output</span></span><br><span class="line"><span class="comment">// 发送网络请求</span></span><br><span class="line"><span class="comment">// 1 - 得到网络请求数据</span></span><br><span class="line"><span class="comment">// 发送网络请求</span></span><br><span class="line"><span class="comment">// 2 - 得到网络请求数据</span></span><br><span class="line"><span class="comment">// 发送网络请求</span></span><br><span class="line"><span class="comment">// 3 - 得到网络请求数据</span></span><br></pre></td></tr></table></figure>
 
-<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">RACSignal *signal = [RACSignal createSignal:^RACDisposable *(<span class="keyword">id</span>&lt;RACSubscriber&gt; subscriber) &#123;</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"发送网络请求"</span>);</span><br><span class="line">    [subscriber sendNext:<span class="string">@"得到网络请求数据"</span>];</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">nil</span>;</span><br><span class="line">&#125;];</span><br><span class="line"></span><br><span class="line">RACMulticastConnection *connect = [signal publish];</span><br><span class="line"></span><br><span class="line">[connect.signal subscribeNext:^(<span class="keyword">id</span> x) &#123;</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"1 - %@"</span>,x);</span><br><span class="line">&#125;];</span><br><span class="line">[connect.signal subscribeNext:^(<span class="keyword">id</span> x) &#123;</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"2 - %@"</span>,x);</span><br><span class="line">&#125;];</span><br><span class="line">[connect.signal subscribeNext:^(<span class="keyword">id</span> x) &#123;</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"3 - %@"</span>,x);</span><br><span class="line">&#125;];</span><br><span class="line">[connect connect];</span><br><span class="line"></span><br><span class="line"><span class="comment">// output</span></span><br><span class="line"><span class="comment">// 发送网络请求</span></span><br><span class="line"><span class="comment">// 1 - 得到网络请求数据</span></span><br><span class="line"><span class="comment">// 2 - 得到网络请求数据</span></span><br><span class="line"><span class="comment">// 3 - 得到网络请求数据</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">RACSignal *signal = [RACSignal createSignal:^RACDisposable *(<span class="keyword">id</span>&lt;RACSubscriber&gt; subscriber) &#123;</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"发送网络请求"</span>);</span><br><span class="line">    [subscriber sendNext:<span class="string">@"得到网络请求数据"</span>];</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">nil</span>;</span><br><span class="line">&#125;];</span><br><span class="line">RACMulticastConnection *connect = [signal publish];</span><br><span class="line">[connect.signal subscribeNext:^(<span class="keyword">id</span> x) &#123;</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"1 - %@"</span>,x);</span><br><span class="line">&#125;];</span><br><span class="line">[connect.signal subscribeNext:^(<span class="keyword">id</span> x) &#123;</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"2 - %@"</span>,x);</span><br><span class="line">&#125;];</span><br><span class="line">[connect.signal subscribeNext:^(<span class="keyword">id</span> x) &#123;</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"3 - %@"</span>,x);</span><br><span class="line">&#125;];</span><br><span class="line">[connect connect];</span><br><span class="line"></span><br><span class="line"><span class="comment">// output</span></span><br><span class="line"><span class="comment">// 发送网络请求</span></span><br><span class="line"><span class="comment">// 1 - 得到网络请求数据</span></span><br><span class="line"><span class="comment">// 2 - 得到网络请求数据</span></span><br><span class="line"><span class="comment">// 3 - 得到网络请求数据</span></span><br></pre></td></tr></table></figure>
 
 <h2 id="RACScheduler"><a href="#RACScheduler" class="headerlink" title="RACScheduler"></a>RACScheduler</h2><p>RAC中的队列，用GCD封装的。</p>
 <h2 id="开发中常见用法"><a href="#开发中常见用法" class="headerlink" title="开发中常见用法"></a>开发中常见用法</h2><h4 id="代替代理和协议"><a href="#代替代理和协议" class="headerlink" title="代替代理和协议"></a>代替代理和协议</h4><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 需求：自定义redView,监听红色view中按钮点击</span></span><br><span class="line"><span class="comment">// 之前都是需要通过代理监听，给红色View添加一个代理属性，点击按钮的时候，通知代理做事情</span></span><br><span class="line"><span class="comment">// rac_signalForSelector:把调用某个对象的方法的信息转换成信号，就要调用这个方法，就会发送信号。</span></span><br><span class="line"><span class="comment">// 这里表示只要redV调用btnClick:,就会发出信号，订阅就好了。</span></span><br><span class="line">[[redView rac_signalForSelector:<span class="keyword">@selector</span>(btnClick:)] subscribeNext:^(<span class="keyword">id</span> x) &#123;</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"点击红色按钮"</span>);</span><br><span class="line">&#125;];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 代替协议（只能是没有返回值的方法）</span></span><br><span class="line">[[<span class="keyword">self</span> rac_signalForSelector:<span class="keyword">@selector</span>(alertView:clickedButtonAtIndex:) fromProtocol:<span class="class"><span class="keyword">@protocol</span>(<span class="title">UIAlertViewDelegate</span>)] <span class="title">subscribeNext</span>:^(<span class="title">RACTuple</span> *<span class="title">tuple</span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
@@ -235,23 +235,13 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/02/08/ReactiveCocoa/" data-id="ck6ej1oye0002z4slhcba6iiy" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/02/08/ReactiveCocoa/" data-id="ck6epcqi10000umslp492ymr7" class="article-share-link">Share</a>
       
       
     </footer>
   </div>
   
     
-<nav id="article-nav">
-  
-  
-    <a href="/2019/06/01/文章标题/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">文章标题</div>
-    </a>
-  
-</nav>
-
   
 </article>
 
@@ -271,7 +261,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li></ul>
     </div>
   </div>
 
@@ -285,14 +275,6 @@
         
           <li>
             <a href="/2020/02/08/ReactiveCocoa/">ReactiveCocoa</a>
-          </li>
-        
-          <li>
-            <a href="/2019/06/01/文章标题/">文章标题</a>
-          </li>
-        
-          <li>
-            <a href="/2019/06/01/hello-world/">Hello World</a>
           </li>
         
       </ul>
