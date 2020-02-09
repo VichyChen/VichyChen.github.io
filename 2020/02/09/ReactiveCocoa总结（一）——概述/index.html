@@ -7,14 +7,17 @@
   
   <title>ReactiveCocoa总结（一）——概述 | Hexo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="article">
+  <meta name="description" content="什么是ReactiveCocoa？ReactiveCocoa（简称为RAC）,是由Github团队开源的一个具有FRP特性的iOS和OS X开发框架。FRP，Functional Reactive Programming，即函数式响应式编程。FRP的核心是信号，信号是数据流，可以被绑定和传递。 一个经典形象生动的比喻　 可以把信号想象成水龙头，只不过里面不是水，而是玻璃球(value)，直径跟水管">
+<meta property="og:type" content="article">
 <meta property="og:title" content="ReactiveCocoa总结（一）——概述">
 <meta property="og:url" content="http://yoursite.com/2020/02/09/ReactiveCocoa总结（一）——概述/index.html">
 <meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="什么是ReactiveCocoa？ReactiveCocoa（简称为RAC）,是由Github团队开源的一个具有FRP特性的iOS和OS X开发框架。FRP，Functional Reactive Programming，即函数式响应式编程。FRP的核心是信号，信号是数据流，可以被绑定和传递。 一个经典形象生动的比喻　 可以把信号想象成水龙头，只不过里面不是水，而是玻璃球(value)，直径跟水管">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2020-02-09T10:42:17.832Z">
+<meta property="og:updated_time" content="2020-02-09T10:51:19.227Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ReactiveCocoa总结（一）——概述">
+<meta name="twitter:description" content="什么是ReactiveCocoa？ReactiveCocoa（简称为RAC）,是由Github团队开源的一个具有FRP特性的iOS和OS X开发框架。FRP，Functional Reactive Programming，即函数式响应式编程。FRP的核心是信号，信号是数据流，可以被绑定和传递。 一个经典形象生动的比喻　 可以把信号想象成水龙头，只不过里面不是水，而是玻璃球(value)，直径跟水管">
   
     <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -83,11 +86,16 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        
+        <h2 id="什么是ReactiveCocoa？"><a href="#什么是ReactiveCocoa？" class="headerlink" title="什么是ReactiveCocoa？"></a>什么是ReactiveCocoa？</h2><p>ReactiveCocoa（简称为RAC）,是由Github团队开源的一个具有FRP特性的iOS和OS X开发框架。<br>FRP，Functional Reactive Programming，即函数式响应式编程。<br>FRP的核心是信号，信号是数据流，可以被绑定和传递。</p>
+<h2 id="一个经典形象生动的比喻"><a href="#一个经典形象生动的比喻" class="headerlink" title="一个经典形象生动的比喻"></a>一个经典形象生动的比喻</h2><p>　 可以把信号想象成水龙头，只不过里面不是水，而是玻璃球(value)，直径跟水管的内径一样，这样就能保证玻璃球是依次排列，不会出现并排的情况(数据都是线性处理的，不会出现并发情况)。水龙头的开关默认是关的，除非有了接收方(subscriber)，才会打开。这样只要有新的玻璃球进来，就会自动传送给接收方。可以在水龙头上加一个过滤嘴(filter)，不符合的不让通过，也可以加一个改动装置，把球改变成符合自己的需求(map)。也可以把多个水龙头合并成一个新的水龙头(combineLatest:reduce:)，这样只要其中的一个水龙头有玻璃球出来，这个新合并的水龙头就会得到这个球。　</p>
+<h2 id="ReactiveCocoa的作用？"><a href="#ReactiveCocoa的作用？" class="headerlink" title="ReactiveCocoa的作用？"></a>ReactiveCocoa的作用？</h2><p>RAC 提供了一个单一的、统一的方法去处理异步的行为，将Cocoa中 Delegate、Blocks Callbacks、Target-Action、Notifications、KVO、Selector 等都增加了RAC支持，不用去做很多跨函数的事，处理事件很方便，可以把要处理的事情，和监听的事情的代码放在一起，方便管理，简化代码，提高开发效率。</p>
+<h2 id="信号"><a href="#信号" class="headerlink" title="信号"></a>信号</h2><p>RAC的核心就是信号，即RACSignal。信号可以看做是传递数据的工具，当数据变化时，信号就会发送改变的信息，以通知信号的订阅者执行方法。</p>
+<h2 id="冷信号热信号"><a href="#冷信号热信号" class="headerlink" title="冷信号热信号"></a>冷信号热信号</h2><p>Hot Observable可以有多个订阅者，是一对多，集合可以与订阅者共享信息；而Cold Observable只能一对一，当有不同的订阅者，消息是重新完整发送。<br>Hot Observable是主动的，尽管你并没有订阅事件，但是它会时刻推送，就像鼠标移动；而Cold Observable是被动的，只有当你订阅的时候，它才会发布消息。<br>在RAC中除了RACSubject及其子类是热信号外，其它都是冷信号。</p>
+
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/02/09/ReactiveCocoa总结（一）——概述/" data-id="ck6ewh77c00001aslnok60x0s" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/02/09/ReactiveCocoa总结（一）——概述/" data-id="ck6ewqfe300003qsldq4omlwm" class="article-share-link">Share</a>
       
       
     </footer>
