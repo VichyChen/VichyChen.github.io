@@ -7,14 +7,17 @@
   
   <title>ReactiveCocoa总结（四）——宏 | Hexo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="article">
+  <meta name="description" content="宏RAC(TARGET, …)给某个对象的某个属性绑定。 12345678// 只要文本框文字改变，就会修改label的文字RAC(self.labelView, text) = _textField.rac_textSignal;RAC(self.labelView, text, @&quot;收到nil时就显示我&quot;) = _textField.rac_textSignal; // 监听某个对象的某个属性">
+<meta property="og:type" content="article">
 <meta property="og:title" content="ReactiveCocoa总结（四）——宏">
 <meta property="og:url" content="http://yoursite.com/2020/02/09/ReactiveCocoa总结（四）——宏/index.html">
 <meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="宏RAC(TARGET, …)给某个对象的某个属性绑定。 12345678// 只要文本框文字改变，就会修改label的文字RAC(self.labelView, text) = _textField.rac_textSignal;RAC(self.labelView, text, @&quot;收到nil时就显示我&quot;) = _textField.rac_textSignal; // 监听某个对象的某个属性">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2020-02-09T10:43:30.686Z">
+<meta property="og:updated_time" content="2020-02-09T10:55:25.633Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ReactiveCocoa总结（四）——宏">
+<meta name="twitter:description" content="宏RAC(TARGET, …)给某个对象的某个属性绑定。 12345678// 只要文本框文字改变，就会修改label的文字RAC(self.labelView, text) = _textField.rac_textSignal;RAC(self.labelView, text, @&quot;收到nil时就显示我&quot;) = _textField.rac_textSignal; // 监听某个对象的某个属性">
   
     <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -83,11 +86,20 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        
+        <h2 id="宏"><a href="#宏" class="headerlink" title="宏"></a>宏</h2><h4 id="RAC-TARGET-…"><a href="#RAC-TARGET-…" class="headerlink" title="RAC(TARGET, …)"></a>RAC(TARGET, …)</h4><p>给某个对象的某个属性绑定。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 只要文本框文字改变，就会修改label的文字</span></span><br><span class="line">RAC(<span class="keyword">self</span>.labelView, text) = _textField.rac_textSignal;</span><br><span class="line">RAC(<span class="keyword">self</span>.labelView, text, <span class="string">@"收到nil时就显示我"</span>) = _textField.rac_textSignal; </span><br><span class="line"></span><br><span class="line"><span class="comment">// 监听某个对象的某个属性,返回的是信号</span></span><br><span class="line">[RACObserve(<span class="keyword">self</span>.view, center) subscribeNext:^(<span class="keyword">id</span> x) &#123;</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"%@"</span>, x);</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
+
+<h4 id="RACObserve-TARGET-KEYPATH"><a href="#RACObserve-TARGET-KEYPATH" class="headerlink" title="RACObserve(TARGET, KEYPATH)"></a>RACObserve(TARGET, KEYPATH)</h4><p>RACObserve监听的对象属性返回值作为RAC监听对象属性的值。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">RAC(customBtn, hidden) = RACObserve(textField, hidden); </span><br><span class="line"><span class="comment">// 等价于: </span></span><br><span class="line">[RACObserve(textField, hidden) subscribeNext:^(<span class="built_in">BOOL</span> x) &#123; </span><br><span class="line">    customBtn.hidden = x; </span><br><span class="line">&#125;]</span><br></pre></td></tr></table></figure>
+
+<h4 id="weakify-Obj-strongify-Obj"><a href="#weakify-Obj-strongify-Obj" class="headerlink" title="@weakify(Obj) @strongify(Obj)"></a>@weakify(Obj) @strongify(Obj)</h4><p>手动导入，RACEXTScope.h才可以使用。</p>
+<h4 id="RACTuplePack-RACTupleUnpack"><a href="#RACTuplePack-RACTupleUnpack" class="headerlink" title="RACTuplePack RACTupleUnpack"></a>RACTuplePack RACTupleUnpack</h4><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 把数据包装成RACTuple元组类</span></span><br><span class="line">RACTuple *tuple = RACTuplePack(<span class="string">@"xmg"</span>, @<span class="number">20</span>);</span><br><span class="line"><span class="comment">// 把RACTuple元组类解包成对应的数据</span></span><br><span class="line"><span class="comment">// 解包元组，会把元组的值，按顺序给参数里面的变量赋值</span></span><br><span class="line"><span class="comment">// name = @"xmg" age = @20</span></span><br><span class="line">RACTupleUnpack(<span class="built_in">NSString</span> *name, <span class="built_in">NSNumber</span> *age) = tuple;</span><br></pre></td></tr></table></figure>
+
+
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/02/09/ReactiveCocoa总结（四）——宏/" data-id="ck6ewqfec00043qsl8yt3egn7" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/02/09/ReactiveCocoa总结（四）——宏/" data-id="ck6ex1caz00036fsletc9xaf9" class="article-share-link">Share</a>
       
       
     </footer>
