@@ -14,7 +14,7 @@
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="概述什么是ReactiveCocoa？ReactiveCocoa（简称为RAC）,是由Github团队开源的一个具有FRP特性的iOS和OS X开发框架。FRP，Functional Reactive Programming，即函数式响应式编程。FRP的核心是信号，信号是数据流，可以被绑定和传递。 一个经典形象生动的比喻　 可以把信号想象成水龙头，只不过里面不是水，而是玻璃球(value)，直径跟">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2020-02-10T14:11:16.424Z">
+<meta property="og:updated_time" content="2020-02-13T10:30:01.399Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ReactiveCocoa总结">
 <meta name="twitter:description" content="概述什么是ReactiveCocoa？ReactiveCocoa（简称为RAC）,是由Github团队开源的一个具有FRP特性的iOS和OS X开发框架。FRP，Functional Reactive Programming，即函数式响应式编程。FRP的核心是信号，信号是数据流，可以被绑定和传递。 一个经典形象生动的比喻　 可以把信号想象成水龙头，只不过里面不是水，而是玻璃球(value)，直径跟">
@@ -91,8 +91,9 @@
 <h3 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h3><p>RAC 提供了一个单一的、统一的方法去处理异步的行为，将Cocoa中 Delegate、Blocks Callbacks、Target-Action、Notifications、KVO、Selector 等都增加了RAC支持，不用去做很多跨函数的事，处理事件很方便，可以把要处理的事情，和监听的事情的代码放在一起，方便管理，简化代码，提高开发效率。</p>
 <h3 id="信号"><a href="#信号" class="headerlink" title="信号"></a>信号</h3><p>RAC的核心就是信号，即RACSignal。信号可以看做是传递数据的工具，当数据变化时，信号就会发送改变的信息，以通知信号的订阅者执行方法。</p>
 <h3 id="冷信号热信号"><a href="#冷信号热信号" class="headerlink" title="冷信号热信号"></a>冷信号热信号</h3><p>Hot Observable可以有多个订阅者，是一对多，集合可以与订阅者共享信息；而Cold Observable只能一对一，当有不同的订阅者，消息是重新完整发送。<br>Hot Observable是主动的，尽管你并没有订阅事件，但是它会时刻推送，就像鼠标移动；而Cold Observable是被动的，只有当你订阅的时候，它才会发布消息。<br>在RAC中除了RACSubject及其子类是热信号外，其它都是冷信号。</p>
-<h2 id="常用类"><a href="#常用类" class="headerlink" title="常用类"></a>常用类</h2><h3 id="RACSignal"><a href="#RACSignal" class="headerlink" title="RACSignal"></a>RACSignal</h3><p>信号类，表示将来有数据传递，只要有数据改变，信号内部接收到数据，就会马上发出数据。<br>它本身不具备发送信号的能力，而是交给内部一个订阅者去发出。<br>默认一个信号都是冷信号，也就是值改变了，也不会触发，只有订阅了这个信号，这个信号才会变为热信号，值改变了才会触发。</p>
-<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 1.创建信号</span></span><br><span class="line">RACSignal *siganl = [RACSignal createSignal:^RACDisposable *(<span class="keyword">id</span>&lt;RACSubscriber&gt; subscriber) &#123;</span><br><span class="line">    <span class="comment">// block调用时刻：每当有订阅者订阅信号，就会调用block。</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2.发送信号</span></span><br><span class="line">    [subscriber sendNext:@<span class="number">1</span>];</span><br><span class="line">    <span class="comment">// 如果不在发送数据，最好发送信号完成，内部会自动调用[RACDisposable disposable]取消订阅信号。</span></span><br><span class="line">    [subscriber sendCompleted];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> [RACDisposable disposableWithBlock:^&#123;</span><br><span class="line">        <span class="comment">// block调用时刻：当信号发送完成或者发送错误，就会自动执行这个block,取消订阅信号。</span></span><br><span class="line">        <span class="comment">// 执行完Block后，当前信号就不在被订阅了。</span></span><br><span class="line">        <span class="built_in">NSLog</span>(<span class="string">@"信号被销毁"</span>);</span><br><span class="line">    &#125;];</span><br><span class="line">&#125;];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 3.订阅信号,才会激活信号.</span></span><br><span class="line">[siganl subscribeNext:^(<span class="keyword">id</span> x) &#123;</span><br><span class="line">    <span class="comment">// block调用时刻：每当有信号发出数据，就会调用block.</span></span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"接收到数据:%@"</span>, x);</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
+<h2 id="常用类"><a href="#常用类" class="headerlink" title="常用类"></a>常用类</h2><p>此处上类图片</p>
+<h3 id="RACSignal"><a href="#RACSignal" class="headerlink" title="RACSignal"></a>RACSignal</h3><p>信号类，表示将来有数据传递，只要有数据改变，信号内部接收到数据，就会马上发出数据。<br>它本身不具备发送信号的能力，而是交给内部一个订阅者去发出。<br>默认一个信号都是冷信号，也就是值改变了，也不会触发，只有订阅了这个信号，这个信号才会变为热信号，值改变了才会触发。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">这是RAC最核心的内容。</span></span><br><span class="line"><span class="comment">用插头和插座来描述，插座是Signal，插头是Subscriber。</span></span><br><span class="line"><span class="comment">插座负责去获取电，插头负责使用电，而且一个插座可以插任意数量的插头。</span></span><br><span class="line"><span class="comment">当一个插座(Signal)没有插头(Subscriber)时什么也不干，也就是处于冷(Cold)的状态，只有插了插头时才会去获取，这个时候就处于热(Hot)的状态。</span></span><br><span class="line"><span class="comment"> </span></span><br><span class="line"><span class="comment">Signal获取到数据后，会调用Subscriber的sendNext, sendComplete, sendError方法来传送数据给Subscriber，Subscriber自然也有方法来获取传过来的数据，如：[signal subscribeNext:error:completed]。这样只要没有sendComplete和sendError，新的值就会通过sendNext源源不断地传送过来。</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 1.创建信号</span></span><br><span class="line">RACSignal *siganl = [RACSignal createSignal:^RACDisposable *(<span class="keyword">id</span>&lt;RACSubscriber&gt; subscriber) &#123;</span><br><span class="line">    <span class="comment">// block调用时刻：每当有订阅者订阅信号，就会调用block。</span></span><br><span class="line">    <span class="comment">// 2.发送信号</span></span><br><span class="line">    [subscriber sendNext:@<span class="number">1</span>];</span><br><span class="line">    <span class="comment">// 如果不在发送数据，最好发送信号完成，内部会自动调用[RACDisposable disposable]取消订阅信号。</span></span><br><span class="line">    [subscriber sendCompleted];</span><br><span class="line">    <span class="keyword">return</span> [RACDisposable disposableWithBlock:^&#123;</span><br><span class="line">        <span class="comment">// block调用时刻：当信号发送完成或者发送错误，就会自动执行这个block,取消订阅信号。</span></span><br><span class="line">        <span class="comment">// 执行完Block后，当前信号就不在被订阅了。</span></span><br><span class="line">        <span class="built_in">NSLog</span>(<span class="string">@"信号被销毁"</span>);</span><br><span class="line">    &#125;];</span><br><span class="line">&#125;];</span><br><span class="line"><span class="comment">// 3.订阅信号,才会激活信号.</span></span><br><span class="line">[siganl subscribeNext:^(<span class="keyword">id</span> x) &#123;</span><br><span class="line">    <span class="comment">// block调用时刻：每当有信号发出数据，就会调用block.</span></span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"接收到数据:%@"</span>, x);</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
 
 <h3 id="RACSubscriber"><a href="#RACSubscriber" class="headerlink" title="RACSubscriber"></a>RACSubscriber</h3><p>表示订阅者的意思，用于发送信号，这是一个协议，不是一个类，只要遵守这个协议，并且实现方法才能成为订阅者。通过create创建的信号，都有一个订阅者，帮助他发送数据。</p>
 <h3 id="RACDisposable"><a href="#RACDisposable" class="headerlink" title="RACDisposable"></a>RACDisposable</h3><p>用于取消订阅或者清理资源，当信号发送完成或者发送错误的时候，就会自动触发它。</p>
@@ -163,7 +164,7 @@
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">RACSubject *letters = [RACSubject subject];</span><br><span class="line">RACSubject *numbers = [RACSubject subject];</span><br><span class="line">RACSubject *signalOfSignals = [RACSubject subject];</span><br><span class="line">RACSignal *switched = [signalOfSignals switchToLatest];</span><br><span class="line"><span class="comment">// Outputs: A B 1 D</span></span><br><span class="line">[switched subscribeNext:^(<span class="built_in">NSString</span> *x) &#123;</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"%@"</span>, x);</span><br><span class="line">&#125;];</span><br><span class="line">[signalOfSignals sendNext:letters];</span><br><span class="line">[letters sendNext:<span class="string">@"A"</span>];</span><br><span class="line">[letters sendNext:<span class="string">@"B"</span>];</span><br><span class="line">[signalOfSignals sendNext:numbers];</span><br><span class="line">[letters sendNext:<span class="string">@"C"</span>];</span><br><span class="line">[numbers sendNext:<span class="string">@"1"</span>];</span><br><span class="line">[signalOfSignals sendNext:letters];</span><br><span class="line">[numbers sendNext:<span class="string">@"2"</span>];</span><br><span class="line">[letters sendNext:<span class="string">@"D"</span>];</span><br></pre></td></tr></table></figure>
 
 <h3 id="combineLatest"><a href="#combineLatest" class="headerlink" title="combineLatest"></a>combineLatest</h3><p>将多个信号合并起来，当希望两个信号都发出信号时才调用，和zipWith作用一样。</p>
-<h3 id="reduce"><a href="#reduce" class="headerlink" title="reduce"></a>reduce</h3><p>是聚合的作用，讲多个信号分别发送的信号聚在一起返回。 </p>
+<h3 id="reduce"><a href="#reduce" class="headerlink" title="reduce"></a>reduce</h3><p>是聚合的作用，将多个信号分别发送的信号聚在一起返回。 </p>
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">RACSubject *letters = [RACSubject subject];</span><br><span class="line">RACSubject *numbers = [RACSubject subject];</span><br><span class="line">RACSignal *combined = [RACSignal combineLatest:@[letters, numbers] reduce:^(<span class="built_in">NSString</span> *letter, <span class="built_in">NSString</span> *number) &#123;</span><br><span class="line">    <span class="keyword">return</span> [letter stringByAppendingString:number];</span><br><span class="line">&#125;];</span><br><span class="line"><span class="comment">// Outputs: B1 B2 C2 C3</span></span><br><span class="line">[combined subscribeNext:^(<span class="keyword">id</span> x) &#123;</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"%@"</span>, x);</span><br><span class="line">&#125;];</span><br><span class="line">[letters sendNext:<span class="string">@"A"</span>];</span><br><span class="line">[letters sendNext:<span class="string">@"B"</span>];</span><br><span class="line">[numbers sendNext:<span class="string">@"1"</span>];</span><br><span class="line">[numbers sendNext:<span class="string">@"2"</span>];</span><br><span class="line">[letters sendNext:<span class="string">@"C"</span>];</span><br><span class="line">[numbers sendNext:<span class="string">@"3"</span>];</span><br></pre></td></tr></table></figure>
 
 <h2 id="开发中常见用法"><a href="#开发中常见用法" class="headerlink" title="开发中常见用法"></a>开发中常见用法</h2><h3 id="替换代理回调："><a href="#替换代理回调：" class="headerlink" title="替换代理回调："></a>替换代理回调：</h3><p>步骤一：在第二个控制器.h，添加一个RACSubject代替代理。</p>
@@ -200,7 +201,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/02/10/ReactiveCocoa总结/" data-id="ck6gjbezx0000b4slyu437t81" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/02/10/ReactiveCocoa总结/" data-id="ck8n1rxcz000141sluxes7vo6" class="article-share-link">Share</a>
       
       
     </footer>
@@ -209,11 +210,15 @@
     
 <nav id="article-nav">
   
-  
-    <a href="/2020/02/08/ReactiveCocoa/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">ReactiveCocoa</div>
+    <a href="/2020/04/05/GCD（Grand-Central-Dispatch）总结/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          GCD（Grand Central Dispatch）总结
+        
+      </div>
     </a>
+  
   
 </nav>
 
@@ -236,7 +241,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li></ul>
     </div>
   </div>
 
@@ -249,11 +254,11 @@
       <ul>
         
           <li>
-            <a href="/2020/02/10/ReactiveCocoa总结/">ReactiveCocoa总结</a>
+            <a href="/2020/04/05/GCD（Grand-Central-Dispatch）总结/">GCD（Grand Central Dispatch）总结</a>
           </li>
         
           <li>
-            <a href="/2020/02/08/ReactiveCocoa/">ReactiveCocoa</a>
+            <a href="/2020/02/10/ReactiveCocoa总结/">ReactiveCocoa总结</a>
           </li>
         
       </ul>
