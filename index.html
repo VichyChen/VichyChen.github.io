@@ -23,6 +23,7 @@
   
     <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
   
+  <link href="https://fonts.googleapis.com/css?family=Noto+Sans+KR:100,300,400,700&amp;subset=korean" rel="stylesheet">
   <link rel="stylesheet" href="/css/style.css">
 </head>
 </html>
@@ -30,43 +31,29 @@
   <div id="container">
     <div id="wrap">
       <header id="header">
-  <div id="banner"></div>
+  <!--<div id="banner"></div>-->
   <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">Hexo</a>
-      </h1>
-      
-    </div>
     <div id="header-inner" class="inner">
       <nav id="main-nav">
         <a id="main-nav-toggle" class="nav-icon"></a>
+        <a href="/" id="main-nav-title" class="main-nav-link">Hexo</a>
         
           <a class="main-nav-link" href="/">Home</a>
         
-          <a class="main-nav-link" href="/archives">Archives</a>
+          <a class="main-nav-link" href="/archives/">Archives</a>
+        
+          <a class="main-nav-link" href="/about/">about</a>
         
       </nav>
-      <nav id="sub-nav">
-        
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
-        
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
-      </div>
     </div>
   </div>
 </header>
+
       <div class="outer">
         <section id="main">
   
     <article id="post-GCD（Grand-Central-Dispatch）总结" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2020/04/05/GCD（Grand-Central-Dispatch）总结/" class="article-date">
-  <time datetime="2020-04-05T12:50:48.000Z" itemprop="datePublished">2020-04-05</time>
-</a>
     
   </div>
   <div class="article-inner">
@@ -80,11 +67,14 @@
     </h1>
   
 
+        <a href="/2020/04/05/GCD（Grand-Central-Dispatch）总结/" class="article-date">
+  <time datetime="2020-04-05T12:50:48.000Z" itemprop="datePublished">2020-04-05</time>
+</a>
       </header>
     
-    <div class="article-entry" itemprop="articleBody">
+    <div class="article-entry-abstract" itemprop="articleBody">
       
-        <h4 id="1、常用"><a href="#1、常用" class="headerlink" title="1、常用"></a>1、常用</h4><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">dispatch_async</span>(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>), ^&#123;   </span><br><span class="line">    <span class="comment">// 异步执行</span></span><br><span class="line">    <span class="built_in">dispatch_async</span>(dispatch_get_main_queue(), ^&#123;   </span><br><span class="line">        <span class="comment">// 主线程执行</span></span><br><span class="line">    &#125;);   </span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+        <!--<h4 id="1、常用"><a href="#1、常用" class="headerlink" title="1、常用"></a>1、常用</h4><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">dispatch_async</span>(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>), ^&#123;   </span><br><span class="line">    <span class="comment">// 异步执行</span></span><br><span class="line">    <span class="built_in">dispatch_async</span>(dispatch_get_main_queue(), ^&#123;   </span><br><span class="line">        <span class="comment">// 主线程执行</span></span><br><span class="line">    &#125;);   </span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
 
 <h4 id="2、一次性执行"><a href="#2、一次性执行" class="headerlink" title="2、一次性执行"></a>2、一次性执行</h4><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="built_in">dispatch_once_t</span> onceToken;</span><br><span class="line"><span class="built_in">dispatch_once</span>(&amp;onceToken, ^&#123;</span><br><span class="line">    <span class="comment">//you code</span></span><br><span class="line"> &#125;);</span><br></pre></td></tr></table></figure>
 
@@ -128,11 +118,11 @@
 <p>信号量</p>
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">dispatch_semaphore_t semaphore = dispatch_semaphore_create(<span class="number">0</span>);</span><br><span class="line"><span class="built_in">dispatch_async</span>(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>), ^&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span> ; i &lt; <span class="number">5</span>; i++) &#123;</span><br><span class="line">        <span class="built_in">dispatch_async</span>(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>), ^&#123;</span><br><span class="line">            sleep(<span class="number">3</span>);</span><br><span class="line">            dispatch_semaphore_signal(semaphore);</span><br><span class="line">        &#125;);</span><br><span class="line">        dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"update UI"</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
 
-
+-->
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/04/05/GCD（Grand-Central-Dispatch）总结/" data-id="ck8n3wdiz0000cwsl0sf83qve" class="article-share-link">Share</a>
+      <!--<a data-url="http://yoursite.com/2020/04/05/GCD（Grand-Central-Dispatch）总结/" data-id="ck8x63y400000d6qbxldum5yz" class="article-share-link">Share</a>-->
       
       
     </footer>
@@ -144,9 +134,6 @@
   
     <article id="post-MVVM中使用ReactiveCocoa封装网络请求" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2020/03/10/MVVM中使用ReactiveCocoa封装网络请求/" class="article-date">
-  <time datetime="2020-03-10T13:39:46.000Z" itemprop="datePublished">2020-03-10</time>
-</a>
     
   </div>
   <div class="article-inner">
@@ -160,15 +147,18 @@
     </h1>
   
 
+        <a href="/2020/03/10/MVVM中使用ReactiveCocoa封装网络请求/" class="article-date">
+  <time datetime="2020-03-10T13:39:46.000Z" itemprop="datePublished">2020-03-10</time>
+</a>
       </header>
     
-    <div class="article-entry" itemprop="articleBody">
+    <div class="article-entry-abstract" itemprop="articleBody">
       
-        
+        <!---->
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/03/10/MVVM中使用ReactiveCocoa封装网络请求/" data-id="ck8n3wdj30001cwsldpplitmb" class="article-share-link">Share</a>
+      <!--<a data-url="http://yoursite.com/2020/03/10/MVVM中使用ReactiveCocoa封装网络请求/" data-id="ck8x63y450001d6qbdxhqojo2" class="article-share-link">Share</a>-->
       
       
     </footer>
@@ -180,9 +170,6 @@
   
     <article id="post-ReactiveCocoa总结" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2020/02/10/ReactiveCocoa总结/" class="article-date">
-  <time datetime="2020-02-10T13:39:46.000Z" itemprop="datePublished">2020-02-10</time>
-</a>
     
   </div>
   <div class="article-inner">
@@ -196,11 +183,14 @@
     </h1>
   
 
+        <a href="/2020/02/10/ReactiveCocoa总结/" class="article-date">
+  <time datetime="2020-02-10T13:39:46.000Z" itemprop="datePublished">2020-02-10</time>
+</a>
       </header>
     
-    <div class="article-entry" itemprop="articleBody">
+    <div class="article-entry-abstract" itemprop="articleBody">
       
-        <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><h3 id="什么是ReactiveCocoa？"><a href="#什么是ReactiveCocoa？" class="headerlink" title="什么是ReactiveCocoa？"></a>什么是ReactiveCocoa？</h3><p>ReactiveCocoa（简称为RAC）,是由Github团队开源的一个具有FRP特性的iOS和OS X开发框架。<br>FRP，Functional Reactive Programming，即函数式响应式编程。<br>FRP的核心是信号，信号是数据流，可以被绑定和传递。</p>
+        <!--<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><h3 id="什么是ReactiveCocoa？"><a href="#什么是ReactiveCocoa？" class="headerlink" title="什么是ReactiveCocoa？"></a>什么是ReactiveCocoa？</h3><p>ReactiveCocoa（简称为RAC）,是由Github团队开源的一个具有FRP特性的iOS和OS X开发框架。<br>FRP，Functional Reactive Programming，即函数式响应式编程。<br>FRP的核心是信号，信号是数据流，可以被绑定和传递。</p>
 <h3 id="一个经典形象生动的比喻"><a href="#一个经典形象生动的比喻" class="headerlink" title="一个经典形象生动的比喻"></a>一个经典形象生动的比喻</h3><p>　 可以把信号想象成水龙头，只不过里面不是水，而是玻璃球(value)，直径跟水管的内径一样，这样就能保证玻璃球是依次排列，不会出现并排的情况(数据都是线性处理的，不会出现并发情况)。水龙头的开关默认是关的，除非有了接收方(subscriber)，才会打开。这样只要有新的玻璃球进来，就会自动传送给接收方。可以在水龙头上加一个过滤嘴(filter)，不符合的不让通过，也可以加一个改动装置，把球改变成符合自己的需求(map)。也可以把多个水龙头合并成一个新的水龙头(combineLatest:reduce:)，这样只要其中的一个水龙头有玻璃球出来，这个新合并的水龙头就会得到这个球。　</p>
 <h3 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h3><p>RAC 提供了一个单一的、统一的方法去处理异步的行为，将Cocoa中 Delegate、Blocks Callbacks、Target-Action、Notifications、KVO、Selector 等都增加了RAC支持，不用去做很多跨函数的事，处理事件很方便，可以把要处理的事情，和监听的事情的代码放在一起，方便管理，简化代码，提高开发效率。</p>
 <h3 id="信号"><a href="#信号" class="headerlink" title="信号"></a>信号</h3><p>RAC的核心就是信号，即RACSignal。信号可以看做是传递数据的工具，当数据变化时，信号就会发送改变的信息，以通知信号的订阅者执行方法。</p>
@@ -311,11 +301,11 @@
 <h3 id="weakify-Obj-strongify-Obj"><a href="#weakify-Obj-strongify-Obj" class="headerlink" title="@weakify(Obj) @strongify(Obj)"></a>@weakify(Obj) @strongify(Obj)</h3><p>手动导入，RACEXTScope.h才可以使用。</p>
 <h3 id="RACTuplePack-RACTupleUnpack"><a href="#RACTuplePack-RACTupleUnpack" class="headerlink" title="RACTuplePack RACTupleUnpack"></a>RACTuplePack RACTupleUnpack</h3><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 把数据包装成RACTuple元组类</span></span><br><span class="line">RACTuple *tuple = RACTuplePack(<span class="string">@"xmg"</span>, @<span class="number">20</span>);</span><br><span class="line"><span class="comment">// 把RACTuple元组类解包成对应的数据</span></span><br><span class="line"><span class="comment">// 解包元组，会把元组的值，按顺序给参数里面的变量赋值</span></span><br><span class="line"><span class="comment">// name = @"xmg" age = @20</span></span><br><span class="line">RACTupleUnpack(<span class="built_in">NSString</span> *name, <span class="built_in">NSNumber</span> *age) = tuple;</span><br></pre></td></tr></table></figure>
 
-
+-->
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/02/10/ReactiveCocoa总结/" data-id="ck8n3wdjo0002cwslob5ubsng" class="article-share-link">Share</a>
+      <!--<a data-url="http://yoursite.com/2020/02/10/ReactiveCocoa总结/" data-id="ck8x63y4l0002d6qbq87guc33" class="article-share-link">Share</a>-->
       
       
     </footer>
@@ -328,59 +318,14 @@
 
 
 </section>
-        
-          <aside id="sidebar">
-  
-    
-
-  
-    
-
-  
-    
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
-    <div class="widget">
-      <ul>
-        
-          <li>
-            <a href="/2020/04/05/GCD（Grand-Central-Dispatch）总结/">GCD（Grand Central Dispatch）总结</a>
-          </li>
-        
-          <li>
-            <a href="/2020/03/10/MVVM中使用ReactiveCocoa封装网络请求/">MVVM中使用ReactiveCocoa封装网络请求</a>
-          </li>
-        
-          <li>
-            <a href="/2020/02/10/ReactiveCocoa总结/">ReactiveCocoa总结</a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
-
-  
-</aside>
-        
       </div>
       <footer id="footer">
   
   <div class="outer">
     <div id="footer-info" class="inner">
       &copy; 2020 John Doe<br>
-      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> with 
+      theme_by <a href="http://hexo.io/" target="_blank">mango</a>
     </div>
   </div>
 </footer>
@@ -389,7 +334,9 @@
   
     <a href="/" class="mobile-nav-link">Home</a>
   
-    <a href="/archives" class="mobile-nav-link">Archives</a>
+    <a href="/archives/" class="mobile-nav-link">Archives</a>
+  
+    <a href="/about/" class="mobile-nav-link">about</a>
   
 </nav>
     
